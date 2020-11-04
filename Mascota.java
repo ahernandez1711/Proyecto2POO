@@ -10,15 +10,22 @@ package prograpoozombiedefense;
  * @author pablo
  */
 public class Mascota extends Personaje {
-    public String Nombre;
+    public String Nombre= "Shinaina";
     public Rango Dueño;
-    public Mascota(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos,int Defensa) {
-        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos,Defensa);
+    public Mascota(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos,int Defensa,int[][] Tablero) {
+        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos,Defensa,Tablero);
     }
 
     @Override
     public void SubirNivel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.Nivel++;
+        this.VidaMax+=75;
+        this.Defensa++;
+        Evasion++;
+        if(Nivel%2==0){
+            this.Capacidad++;
+        }
+        this.CantidadCuraciones++;
     }
     
 }

@@ -10,12 +10,19 @@ package prograpoozombiedefense;
  * @author pablo
  */
 public class Tanque extends Personaje {
-    public String Nombre;
-    public Tanque(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos, int Defensa) {
-        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos, Defensa);
+    public String Nombre="Taiyo";
+    public Tanque(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos, int Defensa, int[][] Tablero) {
+        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos, Defensa,Tablero);
     }
     @Override
     public void SubirNivel(){
-        this.VidaMax++;
+        this.Nivel++;
+        this.VidaMax+=100;
+        this.Defensa++;
+        Evasion++;
+        if(Nivel%2==0){
+            this.Capacidad++;
+        }
+        this.CantidadCuraciones++;
     }
 }

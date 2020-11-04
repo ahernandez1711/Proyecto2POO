@@ -15,7 +15,8 @@ public class PrograPooZombieDefense {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       Tablero t= new Tablero();
+       t.GUI.setVisible(true);
     }
     
 }

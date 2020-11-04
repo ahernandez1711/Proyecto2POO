@@ -14,7 +14,9 @@ public abstract class Base {
     public int Vida;
     public int Ataque;
     public int Movimientos;
-
+    public int X;
+    public int Y;
+    
     public Base(int Vida, int Ataque, int Movimientos) {
         this.VidaMax = Vida;
         this.Vida=VidaMax;

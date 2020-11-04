@@ -9,6 +9,12 @@ package prograpoozombiedefense;
  *
  * @author pablo
  */
-public class Zombie {
+public class Zombie extends Base {
+    public int Tipo;
+    public int Evasion;
+    public int Defensa;
+    public Zombie(int Vida, int Ataque, int Movimientos) {
+        super(Vida, Ataque, Movimientos);
+    }
     
 }

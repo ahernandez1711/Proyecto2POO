@@ -10,14 +10,18 @@ package prograpoozombiedefense;
  * @author pablo
  */
 public class Rango extends Personaje{
-    public String Nombre;
+    public String Nombre="Tsuki";
     public Mascota Pet;
-    public Rango(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos, int Defensa) {
-        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos, Defensa);
+    public Rango(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos, int Defensa,int[][] Tablero) {
+        super(Distancia, Evasion, Critico, Capacidad, CantidadCuraciones, Vida, Ataque, Movimientos, Defensa, Tablero);
     }
 
     @Override
     public void SubirNivel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.Nivel++;
+        this.VidaMax+=10;
+        this.Critico+=2;
+        this.Capacidad++;
+        this.CantidadCuraciones++;
     }
 }

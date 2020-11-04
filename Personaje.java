@@ -15,11 +15,12 @@ public abstract class Personaje extends Base {
     public int Experiencia;
     public int Evasion;
     public int Critico;
+    public int[][] Tablero;
     public int Capacidad;
     public int Defensa;
     public int CantidadCuraciones;
 
-    public Personaje(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos,int Defensa) {
+    public Personaje(int Distancia, int Evasion, int Critico, int Capacidad, int CantidadCuraciones, int Vida, int Ataque, int Movimientos,int Defensa, int Tablero[][]) {
         super(Vida, Ataque, Movimientos);
         this.Distancia = Distancia;
         this.Nivel = 1;
@@ -29,6 +30,7 @@ public abstract class Personaje extends Base {
         this.Capacidad = Capacidad;
         this.CantidadCuraciones = CantidadCuraciones;
         this.Defensa=Defensa;
+        this.Tablero=Tablero;
     }
     public void Curarse(){
         if(CantidadCuraciones==0){
