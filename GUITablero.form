@@ -71,6 +71,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="BtnCambiar" max="32767" attributes="0"/>
                       <Component id="BtnVision" pref="158" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="ZombieAbajo" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -83,6 +87,8 @@
                   <Component id="BtnCambiar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="BtnVision" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="ZombieAbajo" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -103,6 +109,14 @@
         <Component class="javax.swing.JButton" name="BtnVision">
           <Properties>
             <Property name="text" type="java.lang.String" value="Modo vista"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="ZombieAbajo">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Zombie Movimiento"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

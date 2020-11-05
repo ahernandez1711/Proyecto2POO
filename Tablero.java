@@ -7,6 +7,8 @@ package prograpoozombiedefense;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,10 +28,28 @@ public class Tablero implements ActionListener{
     public JButton[][] MatrizTablero= new JButton[24][16];
     public int turno;
     public int jugando=6;
+    public ArrayList<Zombie> ListaZombies=new ArrayList();
+    public ArrayList<Integer> Spawners= new ArrayList();
 
     public Tablero() {
+        GUI.ZombieAbajo.addActionListener(this);
+        
+        Spawners.add(1);
+        Spawners.add(1);
+        
+        Spawners.add(22);
+        Spawners.add(1);
+        
+        Spawners.add(1);
+        Spawners.add(14);
+        
+        Spawners.add(22);
+        Spawners.add(14);
+
+        
         GUI.BtnCambiar.addActionListener(this);
         GUI.BtnVision.addActionListener(this);
+        
         Pet= new Mascota(1,40,10, 6, 0, 500, 200,4 , 10, Tablero);
         Pet.X=2;
         Pet.Y=8;
@@ -39,14 +59,17 @@ public class Tablero implements ActionListener{
         Ran = new Rango(24, 0, 20, 2, 3, 750, 300, 1, 0, Tablero);
         Ran.X=1;
         Ran.Y=8;
-       for (int i = 0; i < 24; i++) {
+        
+        for (int i = 0; i < 24; i++) {
             Tablero[i][0]=4;
             Tablero[i][15]=4;
         }
+        
         for (int i = 0; i < 16; i++) {
             Tablero[0][i]=4;
             Tablero[23][i]=4;
         }
+        
         Tablero[Pet.X][Pet.Y]=6;
         Tablero[Tan.X][Tan.Y]=7;
         Tablero[Ran.X][Ran.Y]=8;
@@ -127,22 +150,18 @@ public class Tablero implements ActionListener{
         
         Tablero[0][7]=3;
         Tablero[0][8]=3;
+        pintarSpawners();
+         _init_();
         
-        Tablero[1][1]=2;
-        Tablero[1][14]=2;
-        
-        
-        _init_();
-        paint();
         apagarTodo();
-        encenderAlrededor(Pet.X, Pet.Y);
-    }    
-    
+        Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
+        ZombieSpawn();
+        
+        
 
-
-
-
-
+        
+        paint();
+    }
     public void _init_(){
         generarBotones();
     }
@@ -167,7 +186,7 @@ public class Tablero implements ActionListener{
                 Boton.setLocation(i*50, j*50);
             }
         }
-    }
+    } 
     public void encenderTodo(){
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 16; j++) {
@@ -176,7 +195,7 @@ public class Tablero implements ActionListener{
             
         }
     }
-        public void apagarTodo(){
+    public void apagarTodo(){
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 16; j++) {
                 if(MatrizTablero[i][j].isEnabled()){
@@ -185,7 +204,7 @@ public class Tablero implements ActionListener{
             }
             
         }
-    }
+    }      
     public void encenderAlrededor(int i, int j){
         MatrizTablero[i][j].setEnabled(true);
         if(Tablero[i+1][j]==0){
@@ -210,11 +229,19 @@ public class Tablero implements ActionListener{
             
         }
     }
+    public void pintarSpawners(){
+        for (int i = 0; i < Spawners.size()/2; i++) {
+            Tablero[Spawners.get(i+i)][Spawners.get(i+i+1)]=2;
+            
+        }
+    }
     public void paint(){
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 16; j++) {
-                if(Tablero[i][j]>5){
-                    if(Tablero[i][j]==6){
+                if(Tablero[i][j]>=5){
+                 if(Tablero[i][j]==5){
+                        MatrizTablero[i][j].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                }else if(Tablero[i][j]==6){
                         MatrizTablero[i][j].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Z"+".png"));
                     }else if(Tablero[i][j]==7){
                         MatrizTablero[i][j].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"T"+".png"));
@@ -260,9 +287,15 @@ public class Tablero implements ActionListener{
             
             jugando=6;
             Pet.Movimientos=4;
-            encenderAlrededor(Pet.X, Pet.Y);
+            Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
         }
     }
+    public void CombatePJ(){
+        if(jugando==6){
+            
+        }
+    }
+    
     public void paintSolo(int x,int y){
                 if(Tablero[x][y]>5){
                      if(Tablero[x][y]==6){
@@ -278,10 +311,85 @@ public class Tablero implements ActionListener{
                 }
             
         
-    }    
+    }
+    public ArrayList<Integer> EncontrarPuntoSpawn(int x, int y){
+        ArrayList<Integer> SpawnPoints= new ArrayList();
+        if(EncontrarPuntoSpawn_Aux(x, y+1)){
+            SpawnPoints.add(x);
+            SpawnPoints.add(y+1);
+        }
+        if(EncontrarPuntoSpawn_Aux(x, y-1)){
+            SpawnPoints.add(x);
+            SpawnPoints.add(y-1);
+        }
+        if(EncontrarPuntoSpawn_Aux(x+1, y)){
+            SpawnPoints.add(x+1);
+            SpawnPoints.add(y);
+        }
+        if(EncontrarPuntoSpawn_Aux(x-1, y)){
+            SpawnPoints.add(x-1);
+            SpawnPoints.add(y);
+        }
+        if(EncontrarPuntoSpawn_Aux(x+1, y+1)){
+            SpawnPoints.add(x+1);
+            SpawnPoints.add(y+1);
+        }
+        if(EncontrarPuntoSpawn_Aux(x+1, y-1)){
+            SpawnPoints.add(x+1);
+            SpawnPoints.add(y-1);
+        }
+        if(EncontrarPuntoSpawn_Aux(x-1, y-1)){
+            SpawnPoints.add(x-1);
+            SpawnPoints.add(y-1);
+        }
+        if(EncontrarPuntoSpawn_Aux(x-1, y+1)){
+            SpawnPoints.add(x-1);
+            SpawnPoints.add(y+1);
+        }
+        return SpawnPoints;
+    }
+    public boolean EncontrarPuntoSpawn_Aux(int x, int y){
+        if(Tablero[x][y]==0){
+            return true;
+        }else
+            return false;
+    }
+    public void ZombieSpawn(){
+        Random R = new Random();
+        int SpawnKey=R.nextInt(Spawners.size()/2);
+        Zombie Enemigo = new Zombie(600, 250, 1);
+        Enemigo.Tablero=Tablero;
 
+        ArrayList<Integer> Points =EncontrarPuntoSpawn(Spawners.get(SpawnKey+SpawnKey),Spawners.get(SpawnKey+SpawnKey+1));
+        if(Points.size()==0){
+            
+        } else{
+            int SpawnerSelec=R.nextInt(Points.size()/2);
+            Enemigo.X=Points.get((SpawnerSelec+SpawnerSelec));
+            Enemigo.Y=Points.get((SpawnerSelec+SpawnerSelec)+1);
+            Tablero[Enemigo.X][Enemigo.Y]=5;
+            
+            Enemigo.PintarseSolos(MatrizTablero);
+            ListaZombies.add(Enemigo);
+        }
+        
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(GUI.ZombieAbajo)){
+            
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+               
+                
+            }
+            Random R= new Random();
+            if(R.nextInt(100)>80){
+                ZombieSpawn();
+            }
+             
+        }
         if(e.getSource().equals(GUI.BtnVision)){
             if(Modo){
             encenderTodo();
@@ -325,7 +433,7 @@ public class Tablero implements ActionListener{
             paintSolo(Pet.X, Pet.Y);
             Pet.Movimientos-=1;
             apagarTodo();
-            encenderAlrededor(Pet.X, Pet.Y);
+            Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
             } else{
                 apagarTodo();
                 jugando();

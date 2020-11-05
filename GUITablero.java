@@ -31,6 +31,7 @@ public class GUITablero extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         BtnCambiar = new javax.swing.JButton();
         BtnVision = new javax.swing.JButton();
+        ZombieAbajo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,6 +57,8 @@ public class GUITablero extends javax.swing.JFrame {
 
         BtnVision.setText("Modo vista");
 
+        ZombieAbajo.setText("Zombie Movimiento");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -64,7 +67,10 @@ public class GUITablero extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BtnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BtnVision, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
+                    .addComponent(BtnVision, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(ZombieAbajo)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -74,6 +80,8 @@ public class GUITablero extends javax.swing.JFrame {
                 .addComponent(BtnCambiar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtnVision)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ZombieAbajo)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -138,6 +146,7 @@ public class GUITablero extends javax.swing.JFrame {
     public javax.swing.JButton BtnCambiar;
     public javax.swing.JButton BtnVision;
     public javax.swing.JPanel PnlFondo;
+    public javax.swing.JButton ZombieAbajo;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
