@@ -28,11 +28,13 @@ public class Tablero implements ActionListener{
     public JButton[][] MatrizTablero= new JButton[24][16];
     public int turno;
     public int jugando=6;
+    public Boolean AtackMode=false; 
     public ArrayList<Zombie> ListaZombies=new ArrayList();
     public ArrayList<Integer> Spawners= new ArrayList();
 
     public Tablero() {
-        GUI.ZombieAbajo.addActionListener(this);
+        GUI.BtnReload.addActionListener(this);
+        GUI.BtnAtaque.addActionListener(this);
         
         Spawners.add(1);
         Spawners.add(1);
@@ -50,10 +52,10 @@ public class Tablero implements ActionListener{
         GUI.BtnCambiar.addActionListener(this);
         GUI.BtnVision.addActionListener(this);
         
-        Pet= new Mascota(1,40,10, 6, 0, 500, 200,4 , 10, Tablero);
+        Pet= new Mascota(1,40,10, 3, 0, 500, 200,4 , 10, Tablero);
         Pet.X=2;
         Pet.Y=8;
-        Tan= new Tanque(1,10, 0,6, 6,1500, 200, 2, 40, Tablero);
+        Tan= new Tanque(1,10, 0,3,3 ,1500, 200, 2, 40, Tablero);
         Tan.X=1;
         Tan.Y=7;
         Ran = new Rango(24, 0, 20, 2, 3, 750, 300, 1, 0, Tablero);
@@ -152,10 +154,11 @@ public class Tablero implements ActionListener{
         Tablero[0][8]=3;
         pintarSpawners();
          _init_();
-        
+        Tags();
         apagarTodo();
         Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
         ZombieSpawn();
+        paint();
         
         
 
@@ -268,34 +271,75 @@ public class Tablero implements ActionListener{
     public void jugando(){
         if(jugando==6){
             jugando=7;
-            Ran.Movimientos=1;
-            encenderAlrededor(Ran.X, Ran.Y);
+            Tan.Movimientos=2;
+            GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
+            encenderAlrededor(Tan.X, Tan.Y);
+            if(Tan.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
         } else if(jugando==7){
             jugando=8;
-            Tan.Movimientos=2;
-            encenderAlrededor(Tan.X, Tan.Y);
+            Ran.Movimientos=1;
+            GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
+            encenderAlrededor(Ran.X, Ran.Y);
+            if(Ran.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
         } else{
-            //Los zombies se mueven aqui
-            /*
-            -----------------------
-            
-            Aqui
-            
-            ----------------------
-            */
-            
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+                
+            }
+             ZombieSpawn();          
             
             jugando=6;
             Pet.Movimientos=4;
+            if(Pet.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+            GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
             Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
         }
     }
-    public void CombatePJ(){
-        if(jugando==6){
+    public void Leveling(){
+        if(Pet.Experiencia>=300){
+            Pet.SubirNivel();
             
+            Pet.Experiencia-=300;
+            Pet.Vida=Pet.VidaMax;
+            GUI.TxALog.append(Pet.Nombre+" ha subido de nivel"+"\n");
+            GUI.LblPetLvl.setText(Pet.Nivel+"");
+            GUI.LblPetXp.setText(Pet.Experiencia+"");
+            Tags();
+        }
+        if(Tan.Experiencia>=300){
+            
+            Tan.SubirNivel();
+            Tan.Experiencia-=300;
+            Tan.Vida=Tan.VidaMax;
+            GUI.TxALog.append(Tan.Nombre+" ha subido de nivel"+"\n");
+            GUI.LblTanqueLvl.setText(Tan.Nivel+"");
+            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+            Tags();
+        }
+        if(Ran.Experiencia>=300){
+            
+            Ran.SubirNivel();
+            Ran.Vida=Ran.VidaMax;
+            GUI.TxALog.append(Ran.Nombre+" ha subido de nivel"+"\n");
+            GUI.LblPetLvl.setText(Ran.Nivel+"");
+            Ran.Experiencia-=300;
+            GUI.LblRangoLvl.setText(Ran.Nivel+"");
+            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+            Tags();
         }
     }
-    
     public void paintSolo(int x,int y){
                 if(Tablero[x][y]>5){
                      if(Tablero[x][y]==6){
@@ -354,6 +398,37 @@ public class Tablero implements ActionListener{
         }else
             return false;
     }
+    public void Tags(){
+        GUI.LblPetName.setText(Pet.Nombre);
+        GUI.LblPetLvl.setText(Pet.Nivel+"");
+        GUI.LblPetCrit.setText(Pet.Critico+"%");
+        GUI.LblPetDefensa.setText(Pet.Defensa+"%");
+        GUI.LblPetEvasion.setText(Pet.Evasion+"%");
+        GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
+        GUI.LblPetVida.setText(Pet.Vida+"");
+        GUI.LblPetXp.setText(Pet.Experiencia+"");
+        GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");        
+       
+        GUI.LblTanqueName.setText(Tan.Nombre);
+        GUI.LblTanqueLvl.setText(Tan.Nivel+"");
+        GUI.LblTanqueCrit.setText(Tan.Critico+"%");
+        GUI.LblTanqueDefensa.setText(Tan.Defensa+"%");
+        GUI.LblTanqueEvasion.setText(Tan.Evasion+"%");
+        GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
+        GUI.LblTanqueVida.setText(Tan.Vida+"");
+        GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+        GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");
+        
+        GUI.LblRangoName.setText(Ran.Nombre);
+        GUI.LblRangoLvl.setText(Ran.Nivel+"");
+        GUI.LblRangoCrit.setText(Ran.Critico+"%");
+        GUI.LblRangoDefensa.setText(Ran.Defensa+"%");
+        GUI.LblRangoEvasion.setText(Ran.Evasion+"%");
+        GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
+        GUI.LblRangoVida.setText(Ran.Vida+"");
+        GUI.LblRangoXp.setText(Ran.Experiencia+"");
+        GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");
+    }
     public void ZombieSpawn(){
         Random R = new Random();
         int SpawnKey=R.nextInt(Spawners.size()/2);
@@ -377,20 +452,35 @@ public class Tablero implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource().equals(GUI.ZombieAbajo)){
-            
-            for (int i = 0; i < ListaZombies.size(); i++) {
-                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
-               
-                
+        if(e.getSource().equals(GUI.BtnReload)){
+            if(jugando==6){
+                if(Pet.CapacidadActual==0){
+                    Pet.CapacidadActual=Pet.Capacidad;
+                    GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");
+                }else{
+                    
+                }
+            }else if(jugando==7){
+                    Tan.CapacidadActual=Tan.Capacidad;
+                    GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");
+            }else{
+                Ran.CapacidadActual=Ran.Capacidad;
+                    GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");
             }
-            Random R= new Random();
-            if(R.nextInt(100)>80){
-                ZombieSpawn();
-            }
-             
         }
-        if(e.getSource().equals(GUI.BtnVision)){
+        if(e.getSource().equals(GUI.BtnAtaque)){
+            AtackMode=true;
+            Modo=false;
+            apagarTodo();
+            if(jugando==6){
+                Pet.atacar(MatrizTablero);
+            }else if(jugando==7){
+                Tan.atacar(MatrizTablero);
+            }else{
+                Ran.atacar(MatrizTablero);
+            }
+        }
+       if(e.getSource().equals(GUI.BtnVision)){
             if(Modo){
             encenderTodo();
             Modo=!Modo;
@@ -403,6 +493,7 @@ public class Tablero implements ActionListener{
         if(Modo){ 
         if(e.getSource().equals(GUI.BtnCambiar)){
             apagarTodo();
+            
             jugando();
         }    
         for (int i = 0; i < 24; i++) {
@@ -432,13 +523,14 @@ public class Tablero implements ActionListener{
             Tablero[Pet.X][Pet.Y]=6;
             paintSolo(Pet.X, Pet.Y);
             Pet.Movimientos-=1;
+            GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
             apagarTodo();
             Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
             } else{
                 apagarTodo();
-                jugando();
+                MatrizTablero[Pet.X][Pet.Y].setEnabled(true);
             }
-        }else if(jugando==7){
+        }else if(jugando==8){
             if(Ran.Movimientos>0){
             Tablero[Ran.X][Ran.Y]=0;
             paintSolo(Ran.X, Ran.Y);
@@ -447,11 +539,12 @@ public class Tablero implements ActionListener{
             Tablero[Ran.X][Ran.Y]=7;
             paintSolo(Ran.X, Ran.Y);
             Ran.Movimientos-=1;
+            GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
             apagarTodo();
             encenderAlrededor(Ran.X, Ran.Y);
             } else{
                 apagarTodo();
-                jugando();
+                MatrizTablero[Ran.X][Ran.Y].setEnabled(true);
             }
             
         }else{
@@ -463,19 +556,129 @@ public class Tablero implements ActionListener{
             Tablero[Tan.X][Tan.Y]=8;
             paintSolo(Tan.X, Tan.Y);
             Tan.Movimientos-=1;
+            GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
             apagarTodo();
             encenderAlrededor(Tan.X, Tan.Y);
             } else{
                 apagarTodo();
-                jugando();
+                MatrizTablero[Tan.X][Tan.Y].setEnabled(true);
             }
         }
         }
     }
     }
-        
+                
         
     }
+if(AtackMode){
+    try{
+        for (int i = 0; i < 24; i++) {
+            for (int j = 0; j < 16; j++) {
+        if(e.getSource().equals(MatrizTablero[i][j])){
+            
+            GUI.BtnAtaque.setEnabled(false);
+            for (int k = 0; k < ListaZombies.size(); k++) {
+                Zombie get = ListaZombies.get(k);
+                if(get.AquiEstoy(i, j)){
+                    if(jugando==6){
+                        if(Pet.CapacidadActual>0){
+                            Pet.CapacidadActual--;
+                            GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");   
+                            if(Pet.Criticos(Pet.Critico)){
+                                get.Vida-=(Pet.Ataque*2);
+                                
+                                GUI.TxALog.append(Pet.Nombre+" ha realizado un golpe crítico de "+ Pet.Ataque*2+" a un Zombie"+"\n");
+                            }else{
+                                get.Vida-=(Pet.Ataque);
+                                GUI.TxALog.append(Pet.Nombre+" ha realizado un ataque de "+ Pet.Ataque+" a un Zombie"+"\n");
+                            }
+                        }
+                    }else if(jugando==7){
+                        Tan.CapacidadActual--;
+                        GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");   
+                        if(Tan.CapacidadActual>0){
+                            if(Tan.Criticos(Tan.Critico)){
+                                get.Vida-=(Tan.Ataque*2);
+                                GUI.TxALog.append(Tan.Nombre+" ha realizado un golpe crítico de "+ Tan.Ataque*2+" a un Zombie"+"\n");
+                            }else{
+                                get.Vida-=(Tan.Ataque);
+                                GUI.TxALog.append(Tan.Nombre+" ha realizado un ataque de "+ Tan.Ataque+" a un Zombie"+"\n");
+                            }
+                        }
+                    }else{
+                        if(Ran.CapacidadActual>0){
+                            Ran.CapacidadActual--;
+                            GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");   
+                            if(Ran.Criticos(Ran.Critico)){
+                                get.Vida-=(Ran.Ataque*2);
+                                GUI.TxALog.append(Ran.Nombre+" ha realizado un golpe crítico de "+ Ran.Ataque*2+" a un Zombie"+"\n");
+                            }else{
+                                GUI.TxALog.append(Ran.Nombre+" ha realizado un ataque de "+ Ran.Ataque+" a un Zombie"+"\n");
+                                get.Vida-=(Ran.Ataque);
+                            }
+                        }
+                    }
+                    if(get.Vida<=0){
+                        if(jugando==6){
+                            Pet.Experiencia+=150;
+                            Tan.Experiencia+=100;
+                            Ran.Experiencia+=100;
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n");
+                        }else if(jugando==7){
+                            Tan.Experiencia+=150;
+                            Pet.Experiencia+=100;
+                            Ran.Experiencia+=100;
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n"); 
+                        }else{
+                            Ran.Experiencia+=150;
+                            Tan.Experiencia+=100;
+                            Pet.Experiencia+=100;
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n");
+                        }
+                        Leveling();
+                        Tablero[get.X][get.Y]=0;
+                        MatrizTablero[get.X][get.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\0.png"));
+                        ListaZombies.remove(get);
+                        
+                    }
+                }
+
+            }
+            if(Modo){
+                            encenderTodo();
+                            Modo=!Modo;
+                        }else{
+                            Encender_Aux();
+                            Modo=!Modo;
+            }
+            AtackMode=false;
+        }
+            }
+        }
+    }
+    catch (NullPointerException f){
+        
+    }
+    
+        }
     }
 }
 

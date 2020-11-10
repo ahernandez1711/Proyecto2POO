@@ -5,6 +5,8 @@
  */
 package prograpoozombiedefense;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author pablo
@@ -17,6 +19,7 @@ public abstract class Personaje extends Base {
     public int Critico;
     public int[][] Tablero;
     public int Capacidad;
+    public int CapacidadActual;
     public int Defensa;
     public int CantidadCuraciones;
 
@@ -28,6 +31,7 @@ public abstract class Personaje extends Base {
         this.Evasion = Evasion;
         this.Critico = Critico;
         this.Capacidad = Capacidad;
+        this.CapacidadActual=Capacidad;
         this.CantidadCuraciones = CantidadCuraciones;
         this.Defensa=Defensa;
         this.Tablero=Tablero;
@@ -41,7 +45,5 @@ public abstract class Personaje extends Base {
         }
     }
     public abstract void SubirNivel();
-    
-    
-    
+    public abstract void atacar(JButton[][] Matriz);
 }

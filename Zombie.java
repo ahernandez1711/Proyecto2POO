@@ -149,11 +149,11 @@ public void movimientoAbajo(JButton[][] Matriz){
 public void PintarseSolos(JButton[][] Matriz){
                 Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
 }
-public Zombie AquiEstoy(int x, int y){
+public boolean AquiEstoy(int x, int y){
     if(this.X==x&&this.Y==y){
-        return this;
+        return true;
     }
-    return null;
+    return false;
 }
 }
 

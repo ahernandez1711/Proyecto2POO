@@ -91,19 +91,19 @@ public class Mascota extends Personaje {
             }
         }
         }
-        public void atacar(){
+        public void atacar(JButton[][] Matriz){
             //Lo dejaste por aqui
             if(Tablero[this.X+1][this.Y]==5){
-                
+                    Matriz[this.X+1][this.Y].setEnabled(true);
             }
             if(Tablero[this.X-1][this.Y]==5){
-                
+                    Matriz[this.X-1][this.Y].setEnabled(true);
             }
-            if(Tablero[this.X][this.Y+1]==5){
-                
+            if(Tablero[this.X][this.Y+1]==5){       
+                    Matriz[this.X][this.Y+1].setEnabled(true);
             }
-            if(Tablero[this.X+1][this.Y-1]==5){
-                
+            if(Tablero[this.X][this.Y-1]==5){
+                    Matriz[this.X][this.Y-1].setEnabled(true);
             }
         }
         

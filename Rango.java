@@ -5,6 +5,8 @@
  */
 package prograpoozombiedefense;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author pablo
@@ -24,4 +26,79 @@ public class Rango extends Personaje{
         this.Capacidad++;
         this.CantidadCuraciones++;
     }
+
+
+    public void atacarDerecha(JButton[][] Matriz) {
+        try{
+        for (int i = 0; i < 24; i++) {
+            if(Tablero[this.X+i][this.Y]==1){
+                break;
+            }
+            if(Tablero[this.X+i][this.Y]==5){
+                Matriz[this.X+i][this.Y].setEnabled(true);
+            }
+        }
+        }
+        catch(Exception e){
+            
+        }
+        
+    }
+    public void atacarIzquierda(JButton[][] Matriz) {
+        try{
+        for (int i = 0; i < 24; i++) {
+            if(Tablero[this.X-i][this.Y]==1){
+                break;
+            }
+            if(Tablero[this.X-i][this.Y]==5){
+                Matriz[this.X-i][this.Y].setEnabled(true);
+            }
+        }
+        }
+        catch(Exception e){
+            
+        }
+        
+    }
+    public void atacarArriba(JButton[][] Matriz) {
+        try{
+        for (int i = 0; i < 16; i++) {
+            if(Tablero[this.X][this.Y+i]==1){
+                break;
+            }
+            if(Tablero[this.X][this.Y+i]==5){
+                Matriz[this.X][this.Y+i].setEnabled(true);
+            }
+        }
+        }
+        catch(Exception e){
+            
+        }
+        
+    }
+    public void atacarAbajo(JButton[][] Matriz) {
+        try{
+        for (int i = 0; i < 16; i++) {
+            if(Tablero[this.X][this.Y-i]==1){
+                break;
+            }
+            if(Tablero[this.X][this.Y-i]==5){
+                Matriz[this.X][this.Y-i].setEnabled(true);
+            }
+        }
+        }
+        catch(Exception e){
+            
+        }
+        
+    }
+
+    @Override
+    public void atacar(JButton[][] Matriz) {
+        atacarAbajo(Matriz);
+        atacarArriba(Matriz);
+        atacarDerecha(Matriz);
+        atacarIzquierda(Matriz);
+    }
+    
 }

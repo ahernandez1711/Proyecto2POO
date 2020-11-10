@@ -5,6 +5,8 @@
  */
 package prograpoozombiedefense;
 
+import java.util.Random;
+
 /**
  *
  * @author pablo
@@ -23,6 +25,14 @@ public abstract class Base {
         this.Ataque = Ataque;
         this.Movimientos = Movimientos;
     }
-    
+    public boolean Criticos(int Prob){
+        Random R= new Random();
+        int Crit=R.nextInt(100);
+        if(Crit<Prob){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
 }
