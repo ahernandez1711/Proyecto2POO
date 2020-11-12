@@ -5,6 +5,7 @@
  */
 package prograpoozombiedefense;
 
+import java.util.ArrayList;
 import javax.swing.JButton;
 
 /**
@@ -54,5 +55,9 @@ public class Tanque extends Personaje {
             if(Tablero[this.X-1][this.Y+1]==5){
                     Matriz[this.X-1][this.Y+1].setEnabled(true);
             }
+    }
+    public void Ulti(JButton[][] Matriz,ArrayList<Zombie> ListaZombies){
+        
+            
     }
 }

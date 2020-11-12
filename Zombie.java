@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -17,9 +18,12 @@ import javax.swing.JButton;
 public class Zombie extends Base {
     public int Tipo;
     public int Tablero[][];
-    public int Evasion;
-    public int Defensa;
+    public int Evasion=0;
+    public int PosicionEnemiga=0;
+    public int Defensa=0;
     public boolean movimiento=true;
+    public boolean ZombieRapido=false;
+    public boolean ZombieTanque=false;
     public Zombie(int Vida, int Ataque, int Movimientos) {
         super(Vida, Ataque, Movimientos);
     }
@@ -32,7 +36,7 @@ public class Zombie extends Base {
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X-=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
                     }
             }else{
@@ -46,7 +50,7 @@ public class Zombie extends Base {
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X-=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
                 }else{
                     
@@ -68,7 +72,7 @@ public class Zombie extends Base {
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.Y-=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
             }
             else{
@@ -79,7 +83,7 @@ public class Zombie extends Base {
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X+=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
                 }else{
                         movimiento=!movimiento;
@@ -90,7 +94,7 @@ public class Zombie extends Base {
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X-=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
                     }
                     else{
@@ -107,7 +111,7 @@ public void movimientoAbajo(JButton[][] Matriz){
                 Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                 this.Y+=1;
                 Tablero[this.X][this.Y]=5;
-                Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                PintarseSolos(Matriz);
                         
                 
             }
@@ -120,7 +124,7 @@ public void movimientoAbajo(JButton[][] Matriz){
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X+=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                       PintarseSolos(Matriz);
                         
                         
                         
@@ -133,7 +137,7 @@ public void movimientoAbajo(JButton[][] Matriz){
                         Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                         this.X-=1;
                         Tablero[this.X][this.Y]=5;
-                        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+                        PintarseSolos(Matriz);
                         
                     }
                     else{
@@ -147,7 +151,14 @@ public void movimientoAbajo(JButton[][] Matriz){
 }
 }
 public void PintarseSolos(JButton[][] Matriz){
-                Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+    if(this.ZombieRapido){
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieAtleta"+".png"));
+    }else if(ZombieTanque){
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieTanque"+".png"));
+    }else{
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+    }
+                
 }
 public boolean AquiEstoy(int x, int y){
     if(this.X==x&&this.Y==y){
@@ -155,6 +166,59 @@ public boolean AquiEstoy(int x, int y){
     }
     return false;
 }
+public boolean EstaPj(int Jugador){
+    
+    if(Tablero[X+1][Y]==Jugador){
+        return true;
+    }
+    if(Tablero[X][Y+1]==Jugador){
+        return true;
+    }
+    if(Tablero[X-1][Y]==Jugador){
+        return true;
+    }
+    if(Tablero[X][Y-1]==Jugador){
+        return true;
+    }
+    return false;
+}
+public void Ataque(Tanque Tan, Rango Ran, Mascota Pet,JTextArea Area){
+    if(EstaPj(7)){
+        if(Esquivar(Ran.Evasion)){
+            Area.append("Zombie a intentado atacar a "+Ran.Nombre+", pero ha fallado \n");
+        }else{
+            int Ataque=250-(250/100)*Ran.Defensa;
+            Ran.Vida-=Ataque;
+            Area.append("Zombie a atacado a "+Ran.Nombre+" por "+Ataque+" de daño \n");
+        }
+        
+    } else if(EstaPj(8)){
+        if(Esquivar(Tan.Evasion)){
+            Area.append("Zombie a intentado atacar a "+Tan.Nombre+", pero ha fallado \n");
+        }else{
+            int Ataque=250-(250/100)*Tan.Defensa;
+            Tan.Vida-=Ataque;
+            Area.append("Un zombie a atacado a "+Tan.Nombre+" por "+Ataque+" de daño \n");
+        }
+    }else{
+        if(Esquivar(Pet.Evasion)){
+            Area.append("Zombie a intentado atacar a "+Pet.Nombre+", pero ha fallado \n");
+        }else{
+            int Ataque=250-(250/100)*Pet.Defensa;
+            Pet.Vida-=Ataque;
+            Area.append("Zombie a atacado a "+Pet.Nombre+" por "+Ataque+" de daño \n");
+        }
+    }
+}
+public boolean Esquivar(int prob){
+    Random R= new Random();
+    if(R.nextInt(100)<prob){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 }
 
 

@@ -28,13 +28,20 @@ public class Tablero implements ActionListener{
     public JButton[][] MatrizTablero= new JButton[24][16];
     public int turno;
     public int jugando=6;
-    public Boolean AtackMode=false; 
+    public Boolean AtackMode=false;
+    public boolean PetUlti=true;
+    public boolean TanqueUlti=true;
+    public boolean RangoUlti=true;
     public ArrayList<Zombie> ListaZombies=new ArrayList();
+    public ArrayList<Zombie> ListaZombiesRapidos=new ArrayList();
     public ArrayList<Integer> Spawners= new ArrayList();
 
     public Tablero() {
         GUI.BtnReload.addActionListener(this);
         GUI.BtnAtaque.addActionListener(this);
+        GUI.BtnDefinitiva.addActionListener(this);
+        GUI.BtnCurarse.addActionListener(this);
+        GUI.BtnDefinitiva.setEnabled(false);
         
         Spawners.add(1);
         Spawners.add(1);
@@ -61,6 +68,8 @@ public class Tablero implements ActionListener{
         Ran = new Rango(24, 0, 20, 2, 3, 750, 300, 1, 0, Tablero);
         Ran.X=1;
         Ran.Y=8;
+        Pet.Dueño=Ran;
+        Ran.Pet=Pet;
         
         for (int i = 0; i < 24; i++) {
             Tablero[i][0]=4;
@@ -270,6 +279,21 @@ public class Tablero implements ActionListener{
     }
     public void jugando(){
         if(jugando==6){
+            for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
+                if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
+                    ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                Zombie get = ListaZombiesRapidos.get(i);
+                get.ZombieMovimiento(MatrizTablero);            
+                }
+                }
+            if(Tan.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            GUI.BtnCurarse.setEnabled(true);
             jugando=7;
             Tan.Movimientos=2;
             GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
@@ -280,6 +304,21 @@ public class Tablero implements ActionListener{
                 GUI.BtnAtaque.setEnabled(true);
             }
         } else if(jugando==7){
+            for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
+                if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
+                    ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                Zombie get = ListaZombiesRapidos.get(i);
+                get.ZombieMovimiento(MatrizTablero);            
+            }
+            }
+            if(Ran.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            GUI.BtnCurarse.setEnabled(true);
             jugando=8;
             Ran.Movimientos=1;
             GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
@@ -291,11 +330,20 @@ public class Tablero implements ActionListener{
             }
         } else{
             for (int i = 0; i < ListaZombies.size(); i++) {
+                if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
+                    ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
                 ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
-                
+                }
             }
              ZombieSpawn();          
-            
+            if(Ran.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            Pet.ProximidadAlRango(GUI.BtnCurarse);
             jugando=6;
             Pet.Movimientos=4;
             if(Pet.CapacidadActual==0){
@@ -407,7 +455,8 @@ public class Tablero implements ActionListener{
         GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
         GUI.LblPetVida.setText(Pet.Vida+"");
         GUI.LblPetXp.setText(Pet.Experiencia+"");
-        GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");        
+        GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");
+        GUI.LblCurasPet.setText(0+"");
        
         GUI.LblTanqueName.setText(Tan.Nombre);
         GUI.LblTanqueLvl.setText(Tan.Nivel+"");
@@ -418,9 +467,10 @@ public class Tablero implements ActionListener{
         GUI.LblTanqueVida.setText(Tan.Vida+"");
         GUI.LblTanqueXp.setText(Tan.Experiencia+"");
         GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");
+        GUI.LblCurasTanque.setText(Tan.CantidadCuraciones+"");
         
         GUI.LblRangoName.setText(Ran.Nombre);
-        GUI.LblRangoLvl.setText(Ran.Nivel+"");
+        GUI.LblRangoLvl.setText(Ran.Nivel+"");                                                                                                                                                                                                                                                                                                                                                                                                                                   
         GUI.LblRangoCrit.setText(Ran.Critico+"%");
         GUI.LblRangoDefensa.setText(Ran.Defensa+"%");
         GUI.LblRangoEvasion.setText(Ran.Evasion+"%");
@@ -428,11 +478,21 @@ public class Tablero implements ActionListener{
         GUI.LblRangoVida.setText(Ran.Vida+"");
         GUI.LblRangoXp.setText(Ran.Experiencia+"");
         GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");
+        GUI.LblCurasRango.setText(Ran.CantidadCuraciones+"");
     }
     public void ZombieSpawn(){
         Random R = new Random();
         int SpawnKey=R.nextInt(Spawners.size()/2);
         Zombie Enemigo = new Zombie(600, 250, 1);
+        if(R.nextInt(100)<10){
+            Enemigo.ZombieRapido=true;
+            this.ListaZombiesRapidos.add(Enemigo);
+            Enemigo.Evasion+=20;
+        }else if(R.nextInt(100)<15){
+            Enemigo.ZombieTanque=true;
+            Enemigo.Defensa+=10;
+            Enemigo.Vida+=600;
+        }
         Enemigo.Tablero=Tablero;
 
         ArrayList<Integer> Points =EncontrarPuntoSpawn(Spawners.get(SpawnKey+SpawnKey),Spawners.get(SpawnKey+SpawnKey+1));
@@ -449,9 +509,236 @@ public class Tablero implements ActionListener{
         }
         
     }
-    
+    public void procTanque(){
+        Random R = new Random();
+        if(R.nextInt(100)<10){
+            Tan.Experiencia+=50;
+            GUI.TxALog.append("Un zombie ha dejado caer un libro,"+Tan.Nombre+" ha obtenido 50 puntos de experiencia"+"\n");
+        }
+        if(R.nextInt(100)<7){
+            Tan.CapacidadActual++;
+            GUI.TxALog.append("Un zombie ha dejado caer un arma,"+Tan.Nombre+" ha 1 de municion"+"\n");
+        }
+        if(R.nextInt(100)<5){
+            Tan.CantidadCuraciones++;
+            GUI.TxALog.append("Un zombie ha dejado caer un vial de curacion,"+Tan.Nombre+" tiene una cura más"+"\n");
+        }
+    }
+    public void MuerteZombie(Zombie get){
+        if(get.Vida<=0){
+                        if(jugando==6){
+                            Pet.Experiencia+=150;
+                            Tan.Experiencia+=100;
+                            Ran.Experiencia+=100;
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procMascota();
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n");
+                        }else if(jugando==7){
+                            Tan.Experiencia+=150;
+                            Pet.Experiencia+=100;
+                            Ran.Experiencia+=100;
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procTanque();
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n"); 
+                        }else{
+                            Ran.Experiencia+=150;
+                            Tan.Experiencia+=100;
+                            Pet.Experiencia+=100;
+                            GUI.TxALog.append(Ran.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procRango();
+                            GUI.LblPetXp.setText(Pet.Experiencia+"");
+                            GUI.LblTanqueXp.setText(Tan.Experiencia+"");
+                            GUI.LblRangoXp.setText(Ran.Experiencia+"");
+                            GUI.TxALog.append("\n");
+                        }
+                        Leveling();
+                        Tablero[get.X][get.Y]=0;
+                        MatrizTablero[get.X][get.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\0.png"));
+                        ListaZombies.remove(get);
+                        if(get.ZombieRapido){
+                            ListaZombiesRapidos.remove(get);
+                        }
+                }
+    }
+    public void procMascota(){
+        Random R = new Random();
+        if(R.nextInt(100)<10){
+            Pet.Experiencia+=50;
+            GUI.TxALog.append("Ese golpe hizo que "+Pet.Nombre+" se diera cuenta una debilidad del zombie, ha obtenido 50 puntos de experiencia"+"\n");
+        }
+        if(R.nextInt(100)<7){
+            Pet.CapacidadActual++;
+            GUI.TxALog.append("Ese zombie basicamente estana muerto,"+Pet.Nombre+ "no ha tenido que atacar"+"\n");
+        }
+        if(R.nextInt(100)<5){
+            Pet.Movimientos++;
+            GUI.TxALog.append("La agilidad de "+Pet.Nombre+" le ha dado 1 movimiento más este turno"+"\n");
+        }
+    }
+    public void procRango(){
+        Random R = new Random();
+        if(R.nextInt(100)<10){
+            Ran.Experiencia+=50;
+            GUI.TxALog.append("Disparo a la cabeza!, "+Ran.Nombre+" ha obtenido 50 puntos de experiencia"+"\n");
+        }
+        if(R.nextInt(100)<7){
+            Ran.CapacidadActual++;
+            GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");   
+            GUI.TxALog.append(Ran.Nombre+ " ha encontrado una bala extra en el piso, 1 de munición extra"+"\n");
+        }
+        if(R.nextInt(100)<5){
+            Ran.Movimientos++;
+            GUI.TxALog.append("Disparo presuroso!, "+Ran.Nombre+" obtiene 1 movimiento extra este turno"+"\n");
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(GUI.BtnDefinitiva)){
+            if(jugando==6){
+                if(PetUlti){
+                GUI.TxALog.append(Pet.Nombre+" se lame las heridas curandose en el proceso \n");
+                Pet.Vida=Pet.VidaMax;
+                PetUlti=false;
+            }
+            }
+        
+            
+            if(jugando==7){
+                if(TanqueUlti){
+                    GUI.TxALog.append(Tan.Nombre+" hace un golpe alrededor suyo, golpeando a todos los zombies alrededor \n");
+                
+                int Damage=0;
+        if(Tablero[Tan.X+1][Tan.Y]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X+1&&get1.Y==Tan.Y){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X-1][Tan.Y]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X-1&&get1.Y==Tan.Y){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X][Tan.Y+1]==5){       
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X&&get1.Y==Tan.Y+1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X][Tan.Y-1]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X&&get1.Y==Tan.Y-1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X-1][Tan.Y-1]==5){
+             for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X-1&&get1.Y==Tan.Y-1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X+1][Tan.Y-1]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X+1&&get1.Y==Tan.Y-1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X+1][Tan.Y+1]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X+1&&get1.Y==Tan.Y+1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            if(Tablero[Tan.X-1][Tan.Y+1]==5){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                Zombie get1 = ListaZombies.get(i);
+                if(get1.X==Tan.X-1&&get1.Y==Tan.Y+1){
+                    get1.Vida-=200;
+                    Damage+=200;
+                    MuerteZombie(get1);
+                }
+            }
+            }
+            GUI.TxALog.append("Daño total: "+Damage+"\n" );
+            TanqueUlti=false;
+            }
+            }
+            if(jugando==8){
+                if(RangoUlti){
+                    GUI.TxALog.append(Ran.Nombre+" obtiene una maestría de tiro, aumentando su daño un 10% \n");
+                    Ran.Ataque+=30;
+                    RangoUlti=false;
+                }
+            }
+        }
+        if(e.getSource().equals(GUI.BtnCurarse)){
+            if(jugando==6){
+                if(Ran.CantidadCuraciones>0){
+                    Pet.Vida=Pet.VidaMax;
+                    Ran.CantidadCuraciones--;
+                    GUI.TxALog.append(Pet.Nombre+" ha mordido un vial de curacion de "+Ran.Nombre+" lo que ha hecho que se cure \n");
+                    Tags();
+                }
+            }
+            if(jugando==7){
+                if(Tan.CantidadCuraciones>0){
+                    Tan.Vida=Tan.VidaMax;
+                    GUI.TxALog.append(Tan.Nombre+" lo que ha hecho que se cure \n");
+                    Tan.CantidadCuraciones--;
+                    Tags();
+                }
+            }
+            if(jugando==8){
+                if(Ran.CantidadCuraciones>0){
+                    Ran.Vida=Ran.VidaMax;
+                    Ran.CantidadCuraciones--;
+                    GUI.TxALog.append(Ran.Nombre+" usa un vial de curación curandose toda la vida \n");
+                    Tags();
+                }
+            }
+            
+        }
         if(e.getSource().equals(GUI.BtnReload)){
             if(jugando==6){
                 if(Pet.CapacidadActual==0){
@@ -571,6 +858,7 @@ public class Tablero implements ActionListener{
         
     }
 if(AtackMode){
+    Random R= new Random();
     try{
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 16; j++) {
@@ -581,43 +869,84 @@ if(AtackMode){
                 Zombie get = ListaZombies.get(k);
                 if(get.AquiEstoy(i, j)){
                     if(jugando==6){
+                        if(R.nextInt(100)<get.Evasion){
+                            GUI.TxALog.append(Pet.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");
+                        }else{
                         if(Pet.CapacidadActual>0){
                             Pet.CapacidadActual--;
                             GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");   
                             if(Pet.Criticos(Pet.Critico)){
-                                get.Vida-=(Pet.Ataque*2);
-                                
-                                GUI.TxALog.append(Pet.Nombre+" ha realizado un golpe crítico de "+ Pet.Ataque*2+" a un Zombie"+"\n");
+                                get.Vida-=((Pet.Ataque*2)-((Pet.Ataque*2)/100)*get.Defensa);
+                                Pet.Dueño.Marcado=get;
+                                GUI.TxALog.append(Pet.Nombre+" ha realizado un golpe crítico de "+((Pet.Ataque*2)-((Pet.Ataque*2)/100)*get.Defensa)+" a un Zombie"+"\n");
                             }else{
-                                get.Vida-=(Pet.Ataque);
-                                GUI.TxALog.append(Pet.Nombre+" ha realizado un ataque de "+ Pet.Ataque+" a un Zombie"+"\n");
+                                get.Vida-=((Pet.Ataque)-((Pet.Ataque)/100)*get.Defensa);
+                                 Pet.Dueño.Marcado=get;
+                                GUI.TxALog.append(Pet.Nombre+" ha realizado un ataque de "+((Pet.Ataque)-((Pet.Ataque)/100)*get.Defensa)+" a un Zombie"+"\n");
                             }
+                        }
                         }
                     }else if(jugando==7){
                         Tan.CapacidadActual--;
-                        GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");   
+                        GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");
+                        if(R.nextInt(100)<get.Evasion){
+                            GUI.TxALog.append(Tan.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");
+                        }else{
                         if(Tan.CapacidadActual>0){
                             if(Tan.Criticos(Tan.Critico)){
-                                get.Vida-=(Tan.Ataque*2);
-                                GUI.TxALog.append(Tan.Nombre+" ha realizado un golpe crítico de "+ Tan.Ataque*2+" a un Zombie"+"\n");
+                                get.Vida-=((Tan.Ataque*2)-((Tan.Ataque*2)/100)*get.Defensa);
+                                GUI.TxALog.append(Tan.Nombre+" ha realizado un golpe crítico de "+ ((Tan.Ataque*2)-((Tan.Ataque*2)/100)*get.Defensa)+" a un Zombie"+"\n");
                             }else{
-                                get.Vida-=(Tan.Ataque);
-                                GUI.TxALog.append(Tan.Nombre+" ha realizado un ataque de "+ Tan.Ataque+" a un Zombie"+"\n");
+                                get.Vida-=((Tan.Ataque)-((Tan.Ataque)/100)*get.Defensa);
+                                GUI.TxALog.append(Tan.Nombre+" ha realizado un ataque de "+ ((Tan.Ataque)-((Tan.Ataque)/100)*get.Defensa)+" a un Zombie"+"\n");
                             }
+                        }
                         }
                     }else{
                         if(Ran.CapacidadActual>0){
                             Ran.CapacidadActual--;
-                            GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");   
-                            if(Ran.Criticos(Ran.Critico)){
-                                get.Vida-=(Ran.Ataque*2);
-                                GUI.TxALog.append(Ran.Nombre+" ha realizado un golpe crítico de "+ Ran.Ataque*2+" a un Zombie"+"\n");
+                            if(R.nextInt(100)<get.Evasion){
+                                GUI.TxALog.append(Ran.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");
                             }else{
-                                GUI.TxALog.append(Ran.Nombre+" ha realizado un ataque de "+ Ran.Ataque+" a un Zombie"+"\n");
-                                get.Vida-=(Ran.Ataque);
+                            GUI.LblRangoAmmo.setText(Ran.CapacidadActual+"");
+                            boolean Crit=Ran.Criticos(Ran.Critico);
+                            boolean Marcado=false;
+                            int Damg=Ran.Ataque;
+                            if(Crit){
+                                Damg=Damg*2;
+                            }
+                            try{
+                                if(get.equals(Ran.Marcado)){
+                                    Damg=Damg*2;
+                                    Marcado=true;
+                                }
+                            }
+                            catch(Exception f){
+                            }
+                            
+                            if(Crit||Marcado){
+                                if(Crit&&Marcado){
+                                    get.Vida-=Damg-(Damg/100)*get.Defensa;
+                                    GUI.TxALog.append(Ran.Nombre+" ha realizado un golpe crítico y estaba marcado por "+Pet.Nombre +" y se ha inflingido  "+ (Damg-(Damg/100)*get.Defensa)+" a un Zombie"+"\n");
+                                }else{
+                                    if(Crit){
+                                        get.Vida-=Damg-(Damg/100)*get.Defensa;
+                                        GUI.TxALog.append(Ran.Nombre+" ha realizado un golpe crítico de "+ (Damg-(Damg/100)*get.Defensa)+" a un Zombie"+"\n");
+                                    }else{
+                                        get.Vida-=Damg-(Damg/100)*get.Defensa;
+                                        GUI.TxALog.append(Ran.Nombre+" ha realizado ataque en un Zombie marcado por "+ (Damg-(Damg/100)*get.Defensa)+" a un Zombie"+"\n");
+                                    }
+                                }
+                                
+                            }else{
+                                GUI.TxALog.append(Ran.Nombre+" ha realizado un ataque de "+ (Damg-(Damg/100)*get.Defensa)+" a un Zombie"+"\n");
+                                get.Vida-=(Damg-(Damg/100)*get.Defensa);
+                            }
                             }
                         }
+                        
                     }
+                        
                     if(get.Vida<=0){
                         if(jugando==6){
                             Pet.Experiencia+=150;
@@ -626,6 +955,7 @@ if(AtackMode){
                             GUI.TxALog.append(Pet.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procMascota();
                             GUI.LblPetXp.setText(Pet.Experiencia+"");
                             GUI.LblTanqueXp.setText(Tan.Experiencia+"");
                             GUI.LblRangoXp.setText(Ran.Experiencia+"");
@@ -637,6 +967,7 @@ if(AtackMode){
                             GUI.TxALog.append(Tan.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Ran.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procTanque();
                             GUI.LblPetXp.setText(Pet.Experiencia+"");
                             GUI.LblTanqueXp.setText(Tan.Experiencia+"");
                             GUI.LblRangoXp.setText(Ran.Experiencia+"");
@@ -648,6 +979,7 @@ if(AtackMode){
                             GUI.TxALog.append(Ran.Nombre+" ha ganado 150 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Tan.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
                             GUI.TxALog.append(Pet.Nombre+" ha ganado 100 puntos de experiencia"+"\n");
+                            procRango();
                             GUI.LblPetXp.setText(Pet.Experiencia+"");
                             GUI.LblTanqueXp.setText(Tan.Experiencia+"");
                             GUI.LblRangoXp.setText(Ran.Experiencia+"");
@@ -657,6 +989,9 @@ if(AtackMode){
                         Tablero[get.X][get.Y]=0;
                         MatrizTablero[get.X][get.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\0.png"));
                         ListaZombies.remove(get);
+                        if(get.ZombieRapido){
+                            ListaZombiesRapidos.remove(get);
+                        }
                         
                     }
                 }

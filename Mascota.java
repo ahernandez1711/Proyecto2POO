@@ -106,7 +106,42 @@ public class Mascota extends Personaje {
                     Matriz[this.X][this.Y-1].setEnabled(true);
             }
         }
-        
+        public boolean ProximidadAlRango(JButton Btn){
+            if(Tablero[X+1][Y]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X-1][Y]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X][Y+1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X][Y-1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X+1][Y+1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X-1][Y+1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X+1][Y-1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            if(Tablero[X-1][Y-1]==7){
+                Btn.setEnabled(true);
+                return true;
+            }
+            Btn.setEnabled(false);
+            return false;
+        }
         
         
         
