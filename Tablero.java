@@ -12,6 +12,7 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
 /**
@@ -277,8 +278,120 @@ public class Tablero implements ActionListener{
             encenderAlrededor(Ran.X, Ran.Y);
         }
     }
+    public void EndGame(){
+     if(Pet.Vida<=0&&Tan.Vida<=0&&Ran.Vida<=0){
+         JOptionPane.showMessageDialog(null, "Todos los personajes han muerto, los zombien ganan");
+         GUI.dispose();
+     }   
+     if(Tablero[1][7]==5||Tablero[1][8]==5){
+         JOptionPane.showMessageDialog(null, "Los zombies han entrado a la base, los zombies ganan");
+         GUI.dispose();
+     }
+    }
+    public boolean solo_aux(){
+        if(Pet.Vida<=0&&Ran.Vida<=0){
+            return true;
+        }
+        if(Pet.Vida<=0&&Tan.Vida<=0){
+            return true;
+        }
+        if(Ran.Vida<=0&&Ran.Vida<=0){
+            return true;
+        }
+        return false;
+    }
+    public void solo(){
+        if(Pet.Vida<=0&&Ran.Vida<=0){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
+                    ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+                }
+            }
+             ZombieSpawn();    
+            if(Tan.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            
+            GUI.BtnCurarse.setEnabled(true);
+            jugando=7;
+            Tan.Movimientos=2;
+            GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
+            encenderAlrededor(Tan.X, Tan.Y);
+            if(Tan.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+        }
+        if(Pet.Vida<=0&&Tan.Vida<=0){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
+                    ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+                }
+            }
+             ZombieSpawn();    
+            if(Ran.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            
+            GUI.BtnCurarse.setEnabled(true);
+            jugando=8;
+            Ran.Movimientos=1;
+            GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
+            encenderAlrededor(Ran.X, Ran.Y);
+            if(Ran.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+        }
+        if(Ran.Vida<=0&&Tan.Vida<=0){
+            for (int i = 0; i < ListaZombies.size(); i++) {
+                if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
+                    ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+                }
+            }
+             ZombieSpawn();    
+            if(Pet.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            
+            GUI.BtnCurarse.setEnabled(true);
+            jugando=6;
+            Ran.Movimientos=4;
+            GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
+            encenderAlrededor(Pet.X, Pet.Y);
+            if(Pet.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+        }
+    
+        
+    }
     public void jugando(){
+        EndGame();
+        if(solo_aux()){
+            solo();
+        }else{
         if(jugando==6){
+            if(Tan.Vida>0){
             for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
                 if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
                     ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
@@ -293,6 +406,7 @@ public class Tablero implements ActionListener{
             }else{
                 GUI.BtnDefinitiva.setEnabled(false);
             }
+            
             GUI.BtnCurarse.setEnabled(true);
             jugando=7;
             Tan.Movimientos=2;
@@ -303,7 +417,38 @@ public class Tablero implements ActionListener{
             }else{
                 GUI.BtnAtaque.setEnabled(true);
             }
-        } else if(jugando==7){
+            
+            }else{
+                for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
+                if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
+                    ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                Zombie get = ListaZombiesRapidos.get(i);
+                get.ZombieMovimiento(MatrizTablero);            
+            }
+            }
+            if(Ran.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            if(Ran.Vida>0){
+            GUI.BtnCurarse.setEnabled(true);
+            jugando=8;
+            Ran.Movimientos=1;
+            GUI.LblRangoMovimientos.setText(Ran.Movimientos+"");
+            encenderAlrededor(Ran.X, Ran.Y);
+            if(Ran.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+            }
+            }
+            
+        }
+         else if(jugando==7){
             for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
                 if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
                     ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
@@ -318,6 +463,7 @@ public class Tablero implements ActionListener{
             }else{
                 GUI.BtnDefinitiva.setEnabled(false);
             }
+            if(Ran.Vida>0){
             GUI.BtnCurarse.setEnabled(true);
             jugando=8;
             Ran.Movimientos=1;
@@ -328,7 +474,38 @@ public class Tablero implements ActionListener{
             }else{
                 GUI.BtnAtaque.setEnabled(true);
             }
+            }else{
+                MatrizTablero[Ran.X][Ran.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
+                for (int i = 0; i < ListaZombies.size(); i++) {
+                if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
+                    ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
+                    Tags();
+                }else{
+                ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
+                }
+            }
+             ZombieSpawn();          
+            if(Ran.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            if(Pet.Vida>0){
+            Pet.ProximidadAlRango(GUI.BtnCurarse);
+            jugando=6;
+            Pet.Movimientos=4;
+            if(Pet.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+            GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
+            Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
+            }
+            }
+            
         } else{
+             
             for (int i = 0; i < ListaZombies.size(); i++) {
                 if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
                     ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
@@ -343,6 +520,7 @@ public class Tablero implements ActionListener{
             }else{
                 GUI.BtnDefinitiva.setEnabled(false);
             }
+            if(Pet.Vida>0){
             Pet.ProximidadAlRango(GUI.BtnCurarse);
             jugando=6;
             Pet.Movimientos=4;
@@ -353,7 +531,26 @@ public class Tablero implements ActionListener{
             }
             GUI.LblPetMovimientos.setText(Pet.Movimientos+"");
             Pet.encenderAlrededor(Pet.X, Pet.Y, MatrizTablero);
+            }else{
+                MatrizTablero[Pet.X][Pet.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
+                if(Tan.Nivel>=10){
+                GUI.BtnDefinitiva.setEnabled(true);
+            }else{
+                GUI.BtnDefinitiva.setEnabled(false);
+            }
+            GUI.BtnCurarse.setEnabled(true);
+            jugando=7;
+            Tan.Movimientos=2;
+            GUI.LblTanqueMovimientos.setText(Tan.Movimientos+"");
+            encenderAlrededor(Tan.X, Tan.Y);
+            if(Tan.CapacidadActual==0){
+                GUI.BtnAtaque.setEnabled(false);
+            }else{
+                GUI.BtnAtaque.setEnabled(true);
+            }
+            }
         }
+    }
     }
     public void Leveling(){
         if(Pet.Experiencia>=300){
@@ -780,7 +977,6 @@ public class Tablero implements ActionListener{
         if(Modo){ 
         if(e.getSource().equals(GUI.BtnCambiar)){
             apagarTodo();
-            
             jugando();
         }    
         for (int i = 0; i < 24; i++) {

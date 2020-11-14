@@ -190,6 +190,11 @@ public void Ataque(Tanque Tan, Rango Ran, Mascota Pet,JTextArea Area){
             int Ataque=250-(250/100)*Ran.Defensa;
             Ran.Vida-=Ataque;
             Area.append("Zombie a atacado a "+Ran.Nombre+" por "+Ataque+" de daño \n");
+            if(Ran.Vida<=0){
+                Area.append("Zombie ha matado a "+Ran.Nombre+ "\n");
+                Tablero[Ran.X][Ran.Y]=0;
+                
+            }
         }
         
     } else if(EstaPj(8)){
@@ -199,6 +204,11 @@ public void Ataque(Tanque Tan, Rango Ran, Mascota Pet,JTextArea Area){
             int Ataque=250-(250/100)*Tan.Defensa;
             Tan.Vida-=Ataque;
             Area.append("Un zombie a atacado a "+Tan.Nombre+" por "+Ataque+" de daño \n");
+            if(Tan.Vida<=0){
+                Area.append("Zombie ha matado a "+Tan.Nombre+ "\n");
+                Tablero[Tan.X][Tan.Y]=0;
+                
+            }
         }
     }else{
         if(Esquivar(Pet.Evasion)){
@@ -207,6 +217,11 @@ public void Ataque(Tanque Tan, Rango Ran, Mascota Pet,JTextArea Area){
             int Ataque=250-(250/100)*Pet.Defensa;
             Pet.Vida-=Ataque;
             Area.append("Zombie a atacado a "+Pet.Nombre+" por "+Ataque+" de daño \n");
+            if(Pet.Vida<=0){
+                Area.append("Zombie ha matado a "+Pet.Nombre+ "\n");
+                Tablero[Pet.X][Pet.Y]=0;
+                
+            }
         }
     }
 }
