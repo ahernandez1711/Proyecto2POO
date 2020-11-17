@@ -22,6 +22,7 @@ import javax.swing.border.Border;
 public class Tablero implements ActionListener{
     public GUITablero GUI= new GUITablero();
     public int[][] Tablero= new int[24][16];
+    public int[][] TableroSonido= new int[24][16];
     public Mascota Pet;
     public Tanque Tan;
     public Rango Ran;
@@ -33,6 +34,7 @@ public class Tablero implements ActionListener{
     public boolean PetUlti=true;
     public boolean TanqueUlti=true;
     public boolean RangoUlti=true;
+    public ArrayList<Integer> futureSpawners=new ArrayList();
     public ArrayList<Zombie> ListaZombies=new ArrayList();
     public ArrayList<Zombie> ListaZombiesRapidos=new ArrayList();
     public ArrayList<Integer> Spawners= new ArrayList();
@@ -44,6 +46,39 @@ public class Tablero implements ActionListener{
         GUI.BtnCurarse.addActionListener(this);
         GUI.BtnDefinitiva.setEnabled(false);
         
+        futureSpawners.add(8);
+        futureSpawners.add(1);
+        
+        futureSpawners.add(15);
+        futureSpawners.add(1);
+        
+        futureSpawners.add(5);
+        futureSpawners.add(4);
+        
+        futureSpawners.add(19);
+        futureSpawners.add(4);
+        
+        futureSpawners.add(1);
+        futureSpawners.add(5); 
+        
+        futureSpawners.add(1);
+        futureSpawners.add(10);
+        
+        futureSpawners.add(8);
+        futureSpawners.add(14);
+        
+        futureSpawners.add(15);
+        futureSpawners.add(14);
+        
+        futureSpawners.add(5);
+        futureSpawners.add(11);
+        
+        futureSpawners.add(19);
+        futureSpawners.add(11);
+        
+        
+        
+        
         Spawners.add(1);
         Spawners.add(1);
         
@@ -56,6 +91,7 @@ public class Tablero implements ActionListener{
         Spawners.add(22);
         Spawners.add(14);
 
+        System.out.println(futureSpawners.size());
         
         GUI.BtnCambiar.addActionListener(this);
         GUI.BtnVision.addActionListener(this);
@@ -178,6 +214,27 @@ public class Tablero implements ActionListener{
     public void _init_(){
         generarBotones();
     }
+    public void limpiarSonido(){
+        for (int i = 0; i < 24; i++) {
+            for (int j = 0; j < 16; j++) {
+                TableroSonido[i][j]=0;
+            } 
+        }
+    }
+    public void ZombieEnrage(){
+        for (int i = 0; i < this.ListaZombies.size(); i++) {
+            Zombie get = ListaZombies.get(i);
+            if(get.Enrage){
+                
+            }
+            else if(TableroSonido[get.X][get.Y]==1){
+                GUI.TxALog.append("Un zombie ha escuchado un sonido y se enfurece \n");
+                get.Enrage=true;
+                get.Ataque+=20;
+                get.PintarseSolos(MatrizTablero);
+            }
+    }
+    }
     public void generarBotones(){
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 16; j++) {
@@ -213,7 +270,8 @@ public class Tablero implements ActionListener{
             for (int j = 0; j < 16; j++) {
                 if(MatrizTablero[i][j].isEnabled()){
                     MatrizTablero[i][j].setEnabled(false);
-                }else{}
+                }else{
+                }
             }
             
         }
@@ -389,10 +447,12 @@ public class Tablero implements ActionListener{
         EndGame();
         if(solo_aux()){
             solo();
+            ZombieEnrage();
         }else{
         if(jugando==6){
             if(Tan.Vida>0){
-            for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
+            ZombieEnrage();
+                for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
                 if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
                     ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
                     Tags();
@@ -419,6 +479,7 @@ public class Tablero implements ActionListener{
             }
             
             }else{
+                ZombieEnrage();
                 for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
                 if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
                     ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
@@ -449,7 +510,8 @@ public class Tablero implements ActionListener{
             
         }
          else if(jugando==7){
-            for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
+            ZombieEnrage();
+             for (int i = 0; i < ListaZombiesRapidos.size(); i++) {
                 if(ListaZombiesRapidos.get(i).EstaPj(7)||ListaZombiesRapidos.get(i).EstaPj(8)||ListaZombiesRapidos.get(i).EstaPj(6)){
                     ListaZombiesRapidos.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
                     Tags();
@@ -475,6 +537,7 @@ public class Tablero implements ActionListener{
                 GUI.BtnAtaque.setEnabled(true);
             }
             }else{
+                ZombieEnrage();
                 MatrizTablero[Ran.X][Ran.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"0"+".png"));
                 for (int i = 0; i < ListaZombies.size(); i++) {
                 if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
@@ -505,7 +568,7 @@ public class Tablero implements ActionListener{
             }
             
         } else{
-             
+            ZombieEnrage();
             for (int i = 0; i < ListaZombies.size(); i++) {
                 if(ListaZombies.get(i).EstaPj(7)||ListaZombies.get(i).EstaPj(8)||ListaZombies.get(i).EstaPj(6)){
                     ListaZombies.get(i).Ataque(Tan, Ran, Pet, GUI.TxALog);
@@ -514,7 +577,8 @@ public class Tablero implements ActionListener{
                 ListaZombies.get(i).ZombieMovimiento(MatrizTablero);
                 }
             }
-             ZombieSpawn();          
+             ZombieSpawn(); 
+             limpiarSonido();
             if(Ran.Nivel>=10){
                 GUI.BtnDefinitiva.setEnabled(true);
             }else{
@@ -598,8 +662,123 @@ public class Tablero implements ActionListener{
                 else{
                 MatrizTablero[x][y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+Tablero[x][y]+".png"));
                 }
+                
             
         
+    }
+    public void sonidoRango(){
+        try{
+        TableroSonido[Ran.X-2][Ran.Y-2]=1;
+        TableroSonido[Ran.X-1][Ran.Y-2]=1;
+        TableroSonido[Ran.X][Ran.Y-2]=1;
+        TableroSonido[Ran.X+1][Ran.Y-2]=1;
+        TableroSonido[Ran.X+2][Ran.Y-2]=1;
+        
+        TableroSonido[Ran.X-2][Ran.Y-1]=1;
+        TableroSonido[Ran.X-1][Ran.Y-1]=1;
+        TableroSonido[Ran.X][Ran.Y-1]=1;
+        TableroSonido[Ran.X+1][Ran.Y-1]=1;
+        TableroSonido[Ran.X+2][Ran.Y-1]=1;
+        
+        TableroSonido[Ran.X-2][Ran.Y]=1;
+        TableroSonido[Ran.X-1][Ran.Y]=1;
+        TableroSonido[Ran.X][Ran.Y]=1;
+        TableroSonido[Ran.X+1][Ran.Y]=1;
+        TableroSonido[Ran.X+2][Ran.Y]=1;
+        
+        TableroSonido[Ran.X-2][Ran.Y+1]=1;
+        TableroSonido[Ran.X-1][Ran.Y+1]=1;
+        TableroSonido[Ran.X][Ran.Y+1]=1;
+        TableroSonido[Ran.X+1][Ran.Y+1]=1;
+        TableroSonido[Ran.X+2][Ran.Y+1]=1;
+        
+        TableroSonido[Ran.X-2][Ran.Y+2]=1;
+        TableroSonido[Ran.X-1][Ran.Y+2]=1;
+        TableroSonido[Ran.X][Ran.Y+2]=1;
+        TableroSonido[Ran.X+1][Ran.Y+2]=1;
+        TableroSonido[Ran.X+2][Ran.Y+2]=1;
+        }
+        catch(Exception e){
+            
+        }
+        }
+    public void SonidoPet(){
+        try{
+        TableroSonido[Pet.X-2][Pet.Y-2]=1;
+        TableroSonido[Pet.X-1][Pet.Y-2]=1;
+        TableroSonido[Pet.X][Pet.Y-2]=1;
+        TableroSonido[Pet.X+1][Pet.Y-2]=1;
+        TableroSonido[Pet.X+2][Pet.Y-2]=1;
+        
+        TableroSonido[Pet.X-2][Pet.Y-1]=1;
+        TableroSonido[Pet.X-1][Pet.Y-1]=1;
+        TableroSonido[Pet.X][Pet.Y-1]=1;
+        TableroSonido[Pet.X+1][Pet.Y-1]=1;
+        TableroSonido[Pet.X+2][Pet.Y-1]=1;
+        
+        TableroSonido[Pet.X-2][Pet.Y]=1;
+        TableroSonido[Pet.X-1][Pet.Y]=1;
+        TableroSonido[Pet.X][Pet.Y]=1;
+        TableroSonido[Pet.X+1][Pet.Y]=1;
+        TableroSonido[Pet.X+2][Pet.Y]=1;
+        
+        TableroSonido[Pet.X-2][Pet.Y]=1;
+        TableroSonido[Pet.X-1][Pet.Y]=1;
+        TableroSonido[Pet.X][Pet.Y]=1;
+        TableroSonido[Pet.X+1][Pet.Y]=1;
+        TableroSonido[Pet.X+2][Pet.Y]=1;
+        
+        TableroSonido[Pet.X-2][Pet.Y+1]=1;
+        TableroSonido[Pet.X-1][Pet.Y+1]=1;
+        TableroSonido[Pet.X][Pet.Y+1]=1;
+        TableroSonido[Pet.X+1][Pet.Y+1]=1;
+        TableroSonido[Pet.X+2][Pet.Y+1]=1;
+        
+        TableroSonido[Pet.X-2][Pet.Y+2]=1;
+        TableroSonido[Pet.X-1][Pet.Y+2]=1;
+        TableroSonido[Pet.X][Pet.Y+2]=1;
+        TableroSonido[Pet.X+1][Pet.Y+2]=1;
+        TableroSonido[Pet.X+2][Pet.Y+2]=1;
+        }
+        catch(Exception e){
+            
+        }
+    }
+    public void SonidoTanque(){
+        try{
+        TableroSonido[Tan.X-2][Tan.Y-2]=1;
+        TableroSonido[Tan.X-1][Tan.Y-2]=1;
+        TableroSonido[Tan.X][Tan.Y-2]=1;
+        TableroSonido[Tan.X+1][Tan.Y-2]=1;
+        TableroSonido[Tan.X+2][Tan.Y-2]=1;
+        
+        TableroSonido[Tan.X-2][Tan.Y-1]=1;
+        TableroSonido[Tan.X-1][Tan.Y-1]=1;
+        TableroSonido[Tan.X][Tan.Y-1]=1;
+        TableroSonido[Tan.X+1][Tan.Y-1]=1;
+        TableroSonido[Tan.X+2][Tan.Y-1]=1;
+        
+        TableroSonido[Tan.X-2][Tan.Y]=1;
+        TableroSonido[Tan.X-1][Tan.Y]=1;
+        TableroSonido[Tan.X][Tan.Y]=1;
+        TableroSonido[Tan.X+1][Tan.Y]=1;
+        TableroSonido[Tan.X+2][Tan.Y]=1;
+        
+        TableroSonido[Tan.X-2][Tan.Y+1]=1;
+        TableroSonido[Tan.X-1][Tan.Y+1]=1;
+        TableroSonido[Tan.X][Tan.Y+1]=1;
+        TableroSonido[Tan.X+1][Tan.Y+1]=1;
+        TableroSonido[Tan.X+2][Tan.Y+1]=1;
+        
+        TableroSonido[Tan.X-2][Tan.Y+2]=1;
+        TableroSonido[Tan.X-1][Tan.Y+2]=1;
+        TableroSonido[Tan.X][Tan.Y+2]=1;
+        TableroSonido[Tan.X+1][Tan.Y+2]=1;
+        TableroSonido[Tan.X+2][Tan.Y+2]=1;
+        }
+        catch(Exception e){
+            
+        }
     }
     public ArrayList<Integer> EncontrarPuntoSpawn(int x, int y){
         ArrayList<Integer> SpawnPoints= new ArrayList();
@@ -800,6 +979,29 @@ public class Tablero implements ActionListener{
             GUI.TxALog.append("Disparo presuroso!, "+Ran.Nombre+" obtiene 1 movimiento extra este turno"+"\n");
         }
     }
+    public void generarSpawner(){
+        Random R = new Random();
+        if(R.nextInt(100)<5){
+            
+            int i= R.nextInt((futureSpawners.size()/2));
+            System.out.println("x:"+futureSpawners.get(i+i));
+            System.out.println("y:"+futureSpawners.get(i+i+1));
+            
+            if(Tablero[futureSpawners.get(i+i)][futureSpawners.get((i+i)+1)]==0){
+                Tablero[futureSpawners.get(i+i)][futureSpawners.get((i+i)+1)]=2;
+                Spawners.add(futureSpawners.get(i+i));
+                Spawners.add(futureSpawners.get((i+i)+1));
+                paintSolo(futureSpawners.get(i+i), futureSpawners.get(i+i+1));
+            }
+            
+            
+        } else{
+        }
+    }
+    
+    
+    
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(GUI.BtnDefinitiva)){
@@ -976,6 +1178,7 @@ public class Tablero implements ActionListener{
                 
         if(Modo){ 
         if(e.getSource().equals(GUI.BtnCambiar)){
+            generarSpawner();
             apagarTodo();
             jugando();
         }    
@@ -1065,12 +1268,14 @@ if(AtackMode){
                 Zombie get = ListaZombies.get(k);
                 if(get.AquiEstoy(i, j)){
                     if(jugando==6){
+                        SonidoPet();
                         if(R.nextInt(100)<get.Evasion){
                             GUI.TxALog.append(Pet.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");
                         }else{
                         if(Pet.CapacidadActual>0){
                             Pet.CapacidadActual--;
-                            GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");   
+                            GUI.LblPetAmmo.setText(Pet.CapacidadActual+"");
+                            
                             if(Pet.Criticos(Pet.Critico)){
                                 get.Vida-=((Pet.Ataque*2)-((Pet.Ataque*2)/100)*get.Defensa);
                                 Pet.Dueño.Marcado=get;
@@ -1083,12 +1288,14 @@ if(AtackMode){
                         }
                         }
                     }else if(jugando==7){
+                        SonidoTanque();
                         Tan.CapacidadActual--;
                         GUI.LblTanqueAmmo.setText(Tan.CapacidadActual+"");
                         if(R.nextInt(100)<get.Evasion){
                             GUI.TxALog.append(Tan.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");
                         }else{
                         if(Tan.CapacidadActual>0){
+                            
                             if(Tan.Criticos(Tan.Critico)){
                                 get.Vida-=((Tan.Ataque*2)-((Tan.Ataque*2)/100)*get.Defensa);
                                 GUI.TxALog.append(Tan.Nombre+" ha realizado un golpe crítico de "+ ((Tan.Ataque*2)-((Tan.Ataque*2)/100)*get.Defensa)+" a un Zombie"+"\n");
@@ -1100,6 +1307,7 @@ if(AtackMode){
                         }
                     }else{
                         if(Ran.CapacidadActual>0){
+                            sonidoRango();
                             Ran.CapacidadActual--;
                             if(R.nextInt(100)<get.Evasion){
                                 GUI.TxALog.append(Ran.Nombre+" intentado atacar a un zombie pero ha esquivado tu ataque"+"\n");

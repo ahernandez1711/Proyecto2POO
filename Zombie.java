@@ -21,6 +21,7 @@ public class Zombie extends Base {
     public int Evasion=0;
     public int PosicionEnemiga=0;
     public int Defensa=0;
+    public boolean Enrage=false;
     public boolean movimiento=true;
     public boolean ZombieRapido=false;
     public boolean ZombieTanque=false;
@@ -152,11 +153,23 @@ public void movimientoAbajo(JButton[][] Matriz){
 }
 public void PintarseSolos(JButton[][] Matriz){
     if(this.ZombieRapido){
-        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieAtleta"+".png"));
+        if(Enrage){
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieAtletaE"+".png"));
+        }else{
+            Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieAtleta"+".png"));
+        }
     }else if(ZombieTanque){
-        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieTanque"+".png"));
+        if(Enrage){
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieTanqueE"+".png"));
+        }else{
+            Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieTanque"+".png"));
+        }
     }else{
-        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+        if(Enrage){
+        Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"ZombieE"+".png"));
+        }else{
+            Matriz[this.X][this.Y].setIcon(new ImageIcon("C:\\Users\\pablo\\OneDrive\\Documentos\\NetBeansProjects\\PrograPooZombieDefense\\Img\\"+"Zombie"+".png"));
+        }
     }
                 
 }
